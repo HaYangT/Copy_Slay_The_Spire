@@ -9,7 +9,8 @@ public class Card
     public String Title => data.name;
     public String Description => data.Description;
     public Sprite Image => data.Image;
-    public List<Effect> Effects => data.Effects;
+    public Effect ManualTargetEffects => data.ManualTargetEffect;
+    public List<AutoTargetEffect> OtherEffects => data.OtherEffects;
     public int Mana { get; private set; }
     private readonly CardData data;
     public Card(CardData cardData)

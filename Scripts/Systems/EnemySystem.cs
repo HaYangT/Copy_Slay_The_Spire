@@ -6,7 +6,7 @@ using UnityEngine;
 public class EnemySystem : Singleton<EnemySystem>
 {
     [SerializeField] private EnemyBoardView enemyBoardView;
-
+    public List<EnemyView> Enemies => enemyBoardView.EnemyViews;
     protected override void Awake()
     {
         base.Awake();
@@ -17,6 +17,7 @@ public class EnemySystem : Singleton<EnemySystem>
         // Performer 등록
         ActionSystem.AttachPerformer<EnemyTurnGA>(EnemyTurnPerformer);
         ActionSystem.AttachPerformer<AttackHeroGA>(AttackHeroPerformer);
+        ActionSystem.AttachPerformer<KillEnemyGA>(KillEnemyPerformer);
     }
 
      void OnDestroy()
@@ -26,6 +27,7 @@ public class EnemySystem : Singleton<EnemySystem>
 
         ActionSystem.DetachPerformer<EnemyTurnGA>();
         ActionSystem.DetachPerformer<AttackHeroGA>();
+        ActionSystem.DetachPerformer<KillEnemyGA>();
     }
 
     // 적 초기화
@@ -64,5 +66,10 @@ public class EnemySystem : Singleton<EnemySystem>
         // 데미지 적용
         DealDamageGA dealDamageGA = new(attacker.AttackPower, new() { HeroSystem.Instance.HeroView });
         ActionSystem.Instance.AddReaction(dealDamageGA);
+    }
+
+    private IEnumerator KillEnemyPerformer(KillEnemyGA killEnemyGA)
+    {
+        yield return enemyBoardView.RemoveEnemy(killEnemyGA.EnemyView);
     }
 }

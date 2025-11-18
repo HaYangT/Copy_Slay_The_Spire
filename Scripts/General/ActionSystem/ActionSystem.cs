@@ -45,14 +45,20 @@ public class ActionSystem : Singleton<ActionSystem>
 
     }
 
-    private IEnumerator PerformPerformer(GameAction action)
+private IEnumerator PerformPerformer(GameAction action)
+{
+    Type type = action.GetType();
+    if (performers.ContainsKey(type))
     {
-        Type type = action.GetType();
-        if (performers.ContainsKey(type))
-        {
-            yield return performers[type](action);
-        }
+        Debug.Log($"[ActionSystem] Performer 실행: {type.Name}");
+        yield return performers[type](action);
     }
+    else
+    {
+        Debug.LogWarning($"[ActionSystem] Performer 없음: {type.Name}");
+    }
+}
+
 
     private void PerformSubscribers(GameAction action, Dictionary<Type, List<Action<GameAction>>> subs)
     {
